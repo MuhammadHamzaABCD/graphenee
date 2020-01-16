@@ -105,6 +105,7 @@
 		
 		<module>gx-sms-vaadin</module>
 		<module>gx-accounting-vaadin</module>
+		<module>gx-pos-vaadin</module>
 		
 	</modules>
 	<dependencyManagement>
@@ -211,6 +212,11 @@
 			<dependency>
 				<groupId>io.graphenee</groupId>
 				<artifactId>gx-accounting-vaadin</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.graphenee</groupId>
+				<artifactId>gx-pos-vaadin</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

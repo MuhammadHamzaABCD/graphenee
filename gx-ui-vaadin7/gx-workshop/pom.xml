@@ -75,6 +75,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.graphenee</groupId>
+			<artifactId>gx-pos-vaadin</artifactId>
+		</dependency>
 	</dependencies>
 	<name>Graphenee Workshop</name>
 	<description>Project to test various Graphenee features and components.</description>
