@@ -107,6 +107,7 @@
 		<module>gx-accounting</module>
 
 		<module>gx-pos</module>
+		
 	</modules>
 	<dependencyManagement>
 		<dependencies>

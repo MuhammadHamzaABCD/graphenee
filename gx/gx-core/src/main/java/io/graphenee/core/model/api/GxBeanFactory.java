@@ -13,27 +13,36 @@ import io.graphenee.core.model.bean.GxAccountBean;
 import io.graphenee.core.model.bean.GxAccountConfigurationBean;
 import io.graphenee.core.model.bean.GxAccountTypeBean;
 import io.graphenee.core.model.bean.GxBalanceSheetBean;
+import io.graphenee.core.model.bean.GxBillingBean;
 import io.graphenee.core.model.bean.GxGeneralLedgerBean;
 import io.graphenee.core.model.bean.GxIncomeStatementBean;
 import io.graphenee.core.model.bean.GxNamespaceBean;
 import io.graphenee.core.model.bean.GxNamespacePropertyBean;
+import io.graphenee.core.model.bean.GxProductBean;
+import io.graphenee.core.model.bean.GxProductTypeBean;
 import io.graphenee.core.model.bean.GxTransactionBean;
 import io.graphenee.core.model.bean.GxTrialBalanceBean;
 import io.graphenee.core.model.bean.GxVoucherBean;
 import io.graphenee.core.model.entity.GxAccount;
 import io.graphenee.core.model.entity.GxAccountConfiguration;
 import io.graphenee.core.model.entity.GxAccountType;
+import io.graphenee.core.model.entity.GxBilling;
 import io.graphenee.core.model.entity.GxGeneralLedger;
 import io.graphenee.core.model.entity.GxNamespace;
 import io.graphenee.core.model.entity.GxNamespaceProperty;
+import io.graphenee.core.model.entity.GxProduct;
+import io.graphenee.core.model.entity.GxProductType;
 import io.graphenee.core.model.entity.GxTransaction;
 import io.graphenee.core.model.entity.GxVoucher;
 import io.graphenee.core.model.jpa.repository.GxAccountConfigurationRepository;
 import io.graphenee.core.model.jpa.repository.GxAccountRepository;
 import io.graphenee.core.model.jpa.repository.GxAccountTypeRepository;
+import io.graphenee.core.model.jpa.repository.GxBillingRepository;
 import io.graphenee.core.model.jpa.repository.GxJournalVoucherRepository;
 import io.graphenee.core.model.jpa.repository.GxNamespacePropertyRepository;
 import io.graphenee.core.model.jpa.repository.GxNamespaceRepository;
+import io.graphenee.core.model.jpa.repository.GxProductRepository;
+import io.graphenee.core.model.jpa.repository.GxProductTypeRepository;
 import io.graphenee.core.model.jpa.repository.GxTransactionRepository;
 
 @Service
@@ -59,6 +68,15 @@ public class GxBeanFactory {
 
 	@Autowired
 	GxAccountConfigurationRepository accountConfigurationRepository;
+
+	@Autowired
+	GxProductTypeRepository gxProductTypeRepository;
+
+	@Autowired
+	GxProductRepository gxProductRepository;
+
+	@Autowired
+	GxBillingRepository gxBillingRepository;
 
 	public GxAccountTypeBean makeGxAccountTypeBean(GxAccountType entity) {
 		GxAccountTypeBean bean = new GxAccountTypeBean();
@@ -255,6 +273,74 @@ public class GxBeanFactory {
 		bean.setAmount(Math.abs((Double) row[5]));
 
 		return bean;
+	}
+
+	public GxProductBean makeGxProductBean(GxProduct gxProduct) {
+		GxProductBean gxProductBean = new GxProductBean();
+		gxProductBean.setBarCode(gxProduct.getBarCode());
+		gxProductBean.setDescription(gxProduct.getDescription());
+		gxProductBean.setOid(gxProduct.getOid());
+		gxProductBean.setPrice(gxProduct.getPrice());
+		gxProductBean.setProductCode(gxProduct.getProductCode());
+		gxProductBean.setRetailPrice(gxProduct.getRetailPrice());
+		gxProductBean.setProductName(gxProduct.getProductName());
+		gxProductBean.setProductTypeBeanFault(new BeanFault<>(gxProduct.getGxProductType().getOid(), (oid) -> {
+			return makeGxProductTypeBean(gxProductTypeRepository.findOne(oid));
+		}));
+		return gxProductBean;
+
+	}
+
+	public List<GxProductBean> makeGxProductBean(List<GxProduct> listGxProduct) {
+		List<GxProductBean> gxProductBeanlist = new ArrayList<>();
+		for (GxProduct gxProduct : listGxProduct) {
+			gxProductBeanlist.add(makeGxProductBean(gxProduct));
+		}
+		return gxProductBeanlist;
+
+	}
+
+	public GxProductTypeBean makeGxProductTypeBean(GxProductType gxProductType) {
+		GxProductTypeBean gxProductTypeBean = new GxProductTypeBean();
+		gxProductTypeBean.setOid(gxProductType.getOid());
+		gxProductTypeBean.setTypeName(gxProductType.getTypeName());
+		gxProductTypeBean.setTypeCode(gxProductType.getTypeCode());
+		return gxProductTypeBean;
+	}
+
+	public List<GxProductTypeBean> makeGxProductTypeBean(List<GxProductType> listGxProductType) {
+		List<GxProductTypeBean> gxProductTypeBeanlist = new ArrayList<>();
+		for (GxProductType gxProductType : listGxProductType) {
+			gxProductTypeBeanlist.add(makeGxProductTypeBean(gxProductType));
+		}
+		return gxProductTypeBeanlist;
+
+	}
+
+	public GxBillingBean makeGxBillingBean(GxBilling entity) {
+		GxBillingBean bean = new GxBillingBean();
+		bean.setOid(entity.getOid());
+		bean.setBillDate(entity.getBillDate());
+		bean.setBillNumber(entity.getBillNumber());
+		bean.setTax(entity.getTax());
+		bean.setDiscount(entity.getDiscount());
+		bean.setTotalBill(entity.getTotalBill());
+		bean.setTotalPaid(entity.getTotalPaid());
+		bean.setTotalPayable(entity.getTotalPayable());
+		bean.setGxProductBeanCollectionFault(BeanCollectionFault.collectionFault(() -> {
+			return gxProductRepository.findAllByGxBillingsOid(bean.getOid()).stream().map(this::makeGxProductBean).collect(Collectors.toList());
+		}));
+
+		return bean;
+	}
+
+	public List<GxBillingBean> makeGxBillingBean(List<GxBilling> listGxBilling) {
+		List<GxBillingBean> GxBillingBeanlist = new ArrayList<>();
+		for (GxBilling gxBilling : listGxBilling) {
+			GxBillingBeanlist.add(makeGxBillingBean(gxBilling));
+		}
+		return GxBillingBeanlist;
+
 	}
 
 }

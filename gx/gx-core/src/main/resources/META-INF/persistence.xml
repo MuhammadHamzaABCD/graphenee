@@ -4,14 +4,26 @@
 		<class>io.graphenee.core.model.GxMappedSuperclass</class>
 		<class>io.graphenee.core.model.entity.GxAccessKey</class>
 		<class>io.graphenee.core.model.entity.GxAccessLog</class>
+		<class>io.graphenee.core.model.entity.GxAccount</class>
+		<class>io.graphenee.core.model.entity.GxAccountBalance</class>
+		<class>io.graphenee.core.model.entity.GxAccountConfiguration</class>
+		<class>io.graphenee.core.model.entity.GxAccountType</class>
 		<class>io.graphenee.core.model.entity.GxAuditLog</class>
+		<class>io.graphenee.core.model.entity.GxBalanceSheet</class>
+		<class>io.graphenee.core.model.entity.GxBilling</class>
 		<class>io.graphenee.core.model.entity.GxCity</class>
 		<class>io.graphenee.core.model.entity.GxCountry</class>
 		<class>io.graphenee.core.model.entity.GxCurrency</class>
 		<class>io.graphenee.core.model.entity.GxEmailTemplate</class>
 		<class>io.graphenee.core.model.entity.GxGender</class>
+		<class>io.graphenee.core.model.entity.GxGeneralLedger</class>
 		<class>io.graphenee.core.model.entity.GxNamespace</class>
 		<class>io.graphenee.core.model.entity.GxNamespaceProperty</class>
+		<class>io.graphenee.core.model.entity.GxPasswordHistory</class>
+		<class>io.graphenee.core.model.entity.GxPasswordPolicy</class>
+		<class>io.graphenee.core.model.entity.GxProduct</class>
+		<class>io.graphenee.core.model.entity.GxProductType</class>
+		<class>io.graphenee.core.model.entity.GxRegisteredDevice</class>
 		<class>io.graphenee.core.model.entity.GxResource</class>
 		<class>io.graphenee.core.model.entity.GxSavedQuery</class>
 		<class>io.graphenee.core.model.entity.GxSecurityGroup</class>
@@ -21,19 +33,10 @@
 		<class>io.graphenee.core.model.entity.GxState</class>
 		<class>io.graphenee.core.model.entity.GxSupportedLocale</class>
 		<class>io.graphenee.core.model.entity.GxTerm</class>
-		<class>io.graphenee.core.model.entity.GxUserAccount</class>
-		<class>io.graphenee.core.model.entity.GxPasswordHistory</class>
-		<class>io.graphenee.core.model.entity.GxPasswordPolicy</class>
-		<class>io.graphenee.core.model.entity.GxRegisteredDevice</class>
-		<class>io.graphenee.core.model.entity.GxAccount</class>
-		<class>io.graphenee.core.model.entity.GxAccountType</class>
 		<class>io.graphenee.core.model.entity.GxTransaction</class>
-		<class>io.graphenee.core.model.entity.GxVoucher</class>
-		<class>io.graphenee.core.model.entity.GxGeneralLedger</class>
-		<class>io.graphenee.core.model.entity.GxAccountBalance</class>
-		<class>io.graphenee.core.model.entity.GxAccountConfiguration</class>
-		<class>io.graphenee.core.model.entity.GxBalanceSheet</class>
 		<class>io.graphenee.core.model.entity.GxTrialBalance</class>
+		<class>io.graphenee.core.model.entity.GxUserAccount</class>
+		<class>io.graphenee.core.model.entity.GxVoucher</class>
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 	</persistence-unit>
 </persistence>

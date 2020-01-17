@@ -11,20 +11,29 @@ import org.springframework.stereotype.Service;
 import io.graphenee.core.model.bean.GxAccountBean;
 import io.graphenee.core.model.bean.GxAccountConfigurationBean;
 import io.graphenee.core.model.bean.GxAccountTypeBean;
+import io.graphenee.core.model.bean.GxBillingBean;
+import io.graphenee.core.model.bean.GxProductBean;
+import io.graphenee.core.model.bean.GxProductTypeBean;
 import io.graphenee.core.model.bean.GxTransactionBean;
 import io.graphenee.core.model.bean.GxVoucherBean;
 import io.graphenee.core.model.entity.GxAccount;
 import io.graphenee.core.model.entity.GxAccountBalance;
 import io.graphenee.core.model.entity.GxAccountConfiguration;
 import io.graphenee.core.model.entity.GxAccountType;
+import io.graphenee.core.model.entity.GxBilling;
+import io.graphenee.core.model.entity.GxProduct;
+import io.graphenee.core.model.entity.GxProductType;
 import io.graphenee.core.model.entity.GxTransaction;
 import io.graphenee.core.model.entity.GxVoucher;
 import io.graphenee.core.model.jpa.repository.GxAccountBalanceRepository;
 import io.graphenee.core.model.jpa.repository.GxAccountConfigurationRepository;
 import io.graphenee.core.model.jpa.repository.GxAccountRepository;
 import io.graphenee.core.model.jpa.repository.GxAccountTypeRepository;
+import io.graphenee.core.model.jpa.repository.GxBillingRepository;
 import io.graphenee.core.model.jpa.repository.GxJournalVoucherRepository;
 import io.graphenee.core.model.jpa.repository.GxNamespaceRepository;
+import io.graphenee.core.model.jpa.repository.GxProductRepository;
+import io.graphenee.core.model.jpa.repository.GxProductTypeRepository;
 import io.graphenee.core.model.jpa.repository.GxTransactionRepository;
 import io.graphenee.core.util.TRCalendarUtil;
 
@@ -51,6 +60,15 @@ public class GxEntityFactory {
 
 	@Autowired
 	GxAccountBalanceRepository accountBalanceRepository;
+
+	@Autowired
+	GxProductTypeRepository gxProductTypeRepository;
+
+	@Autowired
+	GxProductRepository gxProductRepository;
+
+	@Autowired
+	GxBillingRepository gxBillingRepository;
 
 	public GxAccountType makeGxAccountTypeEntity(GxAccountTypeBean bean) {
 		GxAccountType entity = null;
@@ -183,4 +201,71 @@ public class GxEntityFactory {
 		accountBalance.setFiscalYear(TRCalendarUtil.getYear(fiscalYearEnd));
 		return accountBalance;
 	}
+
+	public GxProduct makeGxProductEntity(GxProductBean gxProductBean) {
+		GxProduct gxProduct = null;
+		if (gxProductBean.getOid() != null)
+			gxProduct = gxProductRepository.findOne(gxProductBean.getOid());
+		else
+			gxProduct = new GxProduct();
+
+		gxProduct.setBarCode(gxProductBean.getBarCode());
+		gxProduct.setDescription(gxProductBean.getDescription());
+		gxProduct.setOid(gxProductBean.getOid());
+		gxProduct.setPrice(gxProductBean.getPrice());
+		gxProduct.setProductCode(gxProductBean.getProductCode());
+		gxProduct.setRetailPrice(gxProductBean.getRetailPrice());
+		gxProduct.setProductName(gxProductBean.getProductName());
+		gxProduct.setGxProductType(gxProductTypeRepository.findOne(gxProductBean.getProductTypeBeanFault().getOid()));
+
+		return gxProduct;
+
+	}
+
+	public GxProductType makeGxProductTypeEntity(GxProductTypeBean gxProductTypeBean) {
+		GxProductType gxProductType = null;
+		if (gxProductTypeBean.getOid() != null)
+			gxProductType = gxProductTypeRepository.findOne(gxProductTypeBean.getOid());
+		else
+			gxProductType = new GxProductType();
+
+		gxProductType.setOid(gxProductTypeBean.getOid());
+		gxProductType.setTypeName(gxProductTypeBean.getTypeName());
+		gxProductType.setTypeCode(gxProductTypeBean.getTypeCode());
+		return gxProductType;
+
+	}
+
+	public GxBilling makeGxBillingEntity(GxBillingBean bean) {
+		GxBilling gxBilling = null;
+		if (bean.getOid() != null)
+			gxBilling = gxBillingRepository.findOne(gxBilling.getOid());
+		else
+			gxBilling = new GxBilling();
+		gxBilling.setOid(bean.getOid());
+		gxBilling.setBillDate(bean.getBillDate());
+		gxBilling.setBillNumber(bean.getBillNumber());
+		gxBilling.setTax(bean.getTax());
+		gxBilling.setDiscount(bean.getDiscount());
+		gxBilling.setTotalBill(bean.getTotalBill());
+		gxBilling.setTotalPaid(bean.getTotalPaid());
+		gxBilling.setTotalPayable(bean.getTotalPayable());
+		if (bean.getGxProductBeanCollectionFault().isModified()) {
+			Set<Integer> oids = bean.getGxProductBeanCollectionFault().getBeansRemoved().stream().mapToInt(GxProductBean::getOid).boxed().collect(Collectors.toSet());
+			for (Integer oid : oids) {
+				gxBilling.getGxProducts().removeIf(t -> {
+					return t.getOid().intValue() == oid;
+				});
+			}
+			for (GxProductBean added : bean.getGxProductBeanCollectionFault().getBeansAdded()) {
+				gxBilling.getGxProducts().add(makeGxProductEntity(added));
+			}
+			for (GxProductBean updated : bean.getGxProductBeanCollectionFault().getBeansUpdated()) {
+				makeGxProductEntity(updated);
+			}
+		}
+
+		return gxBilling;
+	}
+
 }

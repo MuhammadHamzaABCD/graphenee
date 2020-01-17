@@ -59,6 +59,8 @@ public class WorkshopDashboardSetup extends AbstractDashboardSetup {
 		menus.add(TRSimpleMenuItem.createMenuItemForView(MetroStyleDashboardView.VIEW_NAME, "Home", FontAwesome.HOME));
 		TRSimpleMenuItem dmMenuItem = TRSimpleMenuItem.createMenuItem("Data Maintenance", FontAwesome.WRENCH);
 		dmMenuItem.addChild(TRSimpleMenuItem.createMenuItemForView(ProductTypeView.VIEW_NAME, "Product Type", FontAwesome.SERVER));
+		dmMenuItem.addChild(TRSimpleMenuItem.createMenuItemForView(ProductView.VIEW_NAME, "Product", FontAwesome.SERVER));
+		dmMenuItem.addChild(TRSimpleMenuItem.createMenuItemForView(BillingView.VIEW_NAME, "Billing", FontAwesome.SERVER));
 		dmMenuItem.addChild(TRSimpleMenuItem.createMenuItemForView(SystemView.VIEW_NAME, "System", FontAwesome.SERVER));
 		dmMenuItem.addChild(TRSimpleMenuItem.createMenuItemForView(LocalizationView.VIEW_NAME, "Localization", FontAwesome.GLOBE));
 		dmMenuItem.addChild(TRSimpleMenuItem.createMenuItemForView(SecurityView.VIEW_NAME, "Security", FontAwesome.USER_SECRET));

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Scope;
 
 import com.vaadin.spring.annotation.SpringComponent;
 
-import io.graphenee.core.model.bean.GxProductTypeBean;
+import io.graphenee.core.model.bean.GxProductBean;
 import io.graphenee.pos.api.GxPosDataService;
 import io.graphenee.vaadin.AbstractEntityListPanel;
 import io.graphenee.vaadin.TRAbstractForm;
@@ -15,26 +15,26 @@ import io.graphenee.vaadin.TRAbstractForm;
 @SuppressWarnings("serial")
 @SpringComponent
 @Scope("prototype")
-public class GxProductTypeListPanel extends AbstractEntityListPanel<GxProductTypeBean> {
+public class GxProductListPanel extends AbstractEntityListPanel<GxProductBean> {
 
 	@Autowired
-	GxProductTypeForm gxProductTypeForm;
+	GxProductForm gxProductForm;
 
 	@Autowired
 	GxPosDataService gxPosDataService;
 
-	public GxProductTypeListPanel() {
-		super(GxProductTypeBean.class);
+	public GxProductListPanel() {
+		super(GxProductBean.class);
 	}
 
 	@Override
-	protected boolean onSaveEntity(GxProductTypeBean entity) {
+	protected boolean onSaveEntity(GxProductBean entity) {
 		gxPosDataService.createOrUpdate(entity);
 		return true;
 	}
 
 	@Override
-	protected boolean onDeleteEntity(GxProductTypeBean entity) {
+	protected boolean onDeleteEntity(GxProductBean entity) {
 		gxPosDataService.delete(entity);
 		return true;
 	}
@@ -45,18 +45,19 @@ public class GxProductTypeListPanel extends AbstractEntityListPanel<GxProductTyp
 	}
 
 	@Override
-	protected List<GxProductTypeBean> fetchEntities() {
-		return gxPosDataService.findAllProductType();
+	protected List<GxProductBean> fetchEntities() {
+		return gxPosDataService.findAllProduct();
 	}
 
 	@Override
 	protected String[] visibleProperties() {
-		return new String[] { "typeName", "typeCode" };
+		return new String[] { "productCode", "productName", "description", "price", "productType" };
+
 	}
 
 	@Override
-	protected TRAbstractForm<GxProductTypeBean> editorForm() {
-		return gxProductTypeForm;
+	protected TRAbstractForm<GxProductBean> editorForm() {
+		return gxProductForm;
 	}
 
 	@Override

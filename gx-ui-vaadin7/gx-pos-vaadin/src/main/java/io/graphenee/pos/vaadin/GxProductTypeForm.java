@@ -15,13 +15,16 @@ import io.graphenee.vaadin.TRAbstractForm;
 public class GxProductTypeForm extends TRAbstractForm<GxProductTypeBean> {
 
 	MTextField typeName;
+	MTextField typeCode;
 
 	@Override
 	protected void addFieldsToForm(FormLayout form) {
 		typeName = new MTextField("Type Name").withRequired(true);
 		typeName.setMaxLength(50);
+		typeCode = new MTextField("Type Code");
+		typeCode.setMaxLength(20);
 
-		form.addComponents(typeName);
+		form.addComponents(typeName, typeCode);
 	}
 
 	@Override

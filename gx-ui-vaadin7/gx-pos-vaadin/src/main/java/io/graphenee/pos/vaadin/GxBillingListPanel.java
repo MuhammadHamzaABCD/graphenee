@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Scope;
 
 import com.vaadin.spring.annotation.SpringComponent;
 
-import io.graphenee.core.model.bean.GxProductTypeBean;
+import io.graphenee.core.model.bean.GxBillingBean;
 import io.graphenee.pos.api.GxPosDataService;
 import io.graphenee.vaadin.AbstractEntityListPanel;
 import io.graphenee.vaadin.TRAbstractForm;
@@ -15,26 +15,26 @@ import io.graphenee.vaadin.TRAbstractForm;
 @SuppressWarnings("serial")
 @SpringComponent
 @Scope("prototype")
-public class GxProductTypeListPanel extends AbstractEntityListPanel<GxProductTypeBean> {
+public class GxBillingListPanel extends AbstractEntityListPanel<GxBillingBean> {
 
 	@Autowired
-	GxProductTypeForm gxProductTypeForm;
+	GxBillingForm gxBillingForm;
 
 	@Autowired
 	GxPosDataService gxPosDataService;
 
-	public GxProductTypeListPanel() {
-		super(GxProductTypeBean.class);
+	public GxBillingListPanel() {
+		super(GxBillingBean.class);
 	}
 
 	@Override
-	protected boolean onSaveEntity(GxProductTypeBean entity) {
+	protected boolean onSaveEntity(GxBillingBean entity) {
 		gxPosDataService.createOrUpdate(entity);
 		return true;
 	}
 
 	@Override
-	protected boolean onDeleteEntity(GxProductTypeBean entity) {
+	protected boolean onDeleteEntity(GxBillingBean entity) {
 		gxPosDataService.delete(entity);
 		return true;
 	}
@@ -45,18 +45,19 @@ public class GxProductTypeListPanel extends AbstractEntityListPanel<GxProductTyp
 	}
 
 	@Override
-	protected List<GxProductTypeBean> fetchEntities() {
-		return gxPosDataService.findAllProductType();
+	protected List<GxBillingBean> fetchEntities() {
+		return gxPosDataService.findAllBilling();
 	}
 
 	@Override
 	protected String[] visibleProperties() {
-		return new String[] { "typeName", "typeCode" };
+		return new String[] { "billNumber", "totalBill", "tax", "discount", "totalPayable" };
+
 	}
 
 	@Override
-	protected TRAbstractForm<GxProductTypeBean> editorForm() {
-		return gxProductTypeForm;
+	protected TRAbstractForm<GxBillingBean> editorForm() {
+		return gxBillingForm;
 	}
 
 	@Override
