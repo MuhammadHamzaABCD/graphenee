@@ -23,4 +23,7 @@ import io.graphenee.core.model.jpa.GxJpaRepository;
 public interface GxProductRepository extends GxJpaRepository<GxProduct, Integer> {
 
 	List<GxProduct> findAllByGxBillingsOid(Integer oid);
+
+	List<GxProduct> findAllByProductNameIgnoreCaseContainingOrProductCodeIgnoreCaseContaining(String productName, String productCode);
+
 }

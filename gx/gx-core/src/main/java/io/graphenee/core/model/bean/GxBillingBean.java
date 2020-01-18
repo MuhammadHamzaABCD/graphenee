@@ -15,6 +15,7 @@ public class GxBillingBean implements Serializable {
 	private double totalBill = 0;
 	private double tax = 0;
 	private double totalPayable = 0;
+
 	private double totalPaid = 0;
 
 	private BeanCollectionFault<GxProductBean> gxProductBeanCollectionFault = BeanCollectionFault.emptyCollectionFault();
@@ -108,5 +109,4 @@ public class GxBillingBean implements Serializable {
 		totalPayable = totalPayable + taxApplied;
 		return totalPayable;
 	}
-
 }

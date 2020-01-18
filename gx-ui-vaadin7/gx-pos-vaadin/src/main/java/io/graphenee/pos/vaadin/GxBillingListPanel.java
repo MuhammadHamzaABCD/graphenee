@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 import com.vaadin.spring.annotation.SpringComponent;
 
 import io.graphenee.core.model.bean.GxBillingBean;
+import io.graphenee.core.util.TRCalendarUtil;
 import io.graphenee.pos.api.GxPosDataService;
 import io.graphenee.vaadin.AbstractEntityListPanel;
 import io.graphenee.vaadin.TRAbstractForm;
@@ -23,12 +24,16 @@ public class GxBillingListPanel extends AbstractEntityListPanel<GxBillingBean> {
 	@Autowired
 	GxPosDataService gxPosDataService;
 
+	@Autowired
+	GxBillingSummaryForm gxBillingSummaryForm;
+
 	public GxBillingListPanel() {
 		super(GxBillingBean.class);
 	}
 
 	@Override
 	protected boolean onSaveEntity(GxBillingBean entity) {
+		entity.setBillDate(TRCalendarUtil.getCurrentTimeStamp());
 		gxPosDataService.createOrUpdate(entity);
 		return true;
 	}
@@ -51,7 +56,7 @@ public class GxBillingListPanel extends AbstractEntityListPanel<GxBillingBean> {
 
 	@Override
 	protected String[] visibleProperties() {
-		return new String[] { "billNumber", "totalBill", "tax", "discount", "totalPayable" };
+		return new String[] { "billNumber", "totalBill", "tax", "discount", "totalPayable", "billDate" };
 
 	}
 
@@ -62,6 +67,18 @@ public class GxBillingListPanel extends AbstractEntityListPanel<GxBillingBean> {
 
 	@Override
 	protected boolean shouldShowDeleteConfirmation() {
+		return true;
+	}
+
+	@Override
+	protected void onGridItemClicked(GxBillingBean item) {
+		gxBillingSummaryForm.setEntity(GxBillingBean.class, item);
+		gxBillingSummaryForm.build();
+		gxBillingSummaryForm.openInModalPopup();
+	}
+
+	@Override
+	protected boolean isGridCellFilterEnabled() {
 		return true;
 	}
 

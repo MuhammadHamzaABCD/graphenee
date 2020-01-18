@@ -94,4 +94,16 @@ public class GxPosDataServiceImpl implements GxPosDataService {
 		gxBillingRepository.deleteById(bean.getOid());
 	}
 
+	@Override
+	public List<GxProductBean> findAllProductByBillingOid(GxBillingBean gxBillingBean) {
+		return gxBeanFactory.makeGxProductBean(gxProductRepository.findAllByGxBillingsOid(gxBillingBean.getOid()));
+
+	}
+
+	@Override
+	public List<GxProductBean> findAllProductByNameOrCode(String productName, String productCode) {
+		return gxBeanFactory.makeGxProductBean(gxProductRepository.findAllByProductNameIgnoreCaseContainingOrProductCodeIgnoreCaseContaining(productName, productCode));
+
+	}
+
 }

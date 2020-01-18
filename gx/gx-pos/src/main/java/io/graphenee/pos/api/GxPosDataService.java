@@ -26,4 +26,8 @@ public interface GxPosDataService {
 
 	void delete(GxBillingBean bean);
 
+	List<GxProductBean> findAllProductByBillingOid(GxBillingBean gxBillingBean);
+
+	List<GxProductBean> findAllProductByNameOrCode(String productName, String productCode);
+
 }

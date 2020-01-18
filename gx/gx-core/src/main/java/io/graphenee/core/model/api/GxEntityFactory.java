@@ -239,10 +239,9 @@ public class GxEntityFactory {
 	public GxBilling makeGxBillingEntity(GxBillingBean bean) {
 		GxBilling gxBilling = null;
 		if (bean.getOid() != null)
-			gxBilling = gxBillingRepository.findOne(gxBilling.getOid());
+			gxBilling = gxBillingRepository.findOne(bean.getOid());
 		else
 			gxBilling = new GxBilling();
-		gxBilling.setOid(bean.getOid());
 		gxBilling.setBillDate(bean.getBillDate());
 		gxBilling.setBillNumber(bean.getBillNumber());
 		gxBilling.setTax(bean.getTax());
@@ -251,17 +250,9 @@ public class GxEntityFactory {
 		gxBilling.setTotalPaid(bean.getTotalPaid());
 		gxBilling.setTotalPayable(bean.getTotalPayable());
 		if (bean.getGxProductBeanCollectionFault().isModified()) {
-			Set<Integer> oids = bean.getGxProductBeanCollectionFault().getBeansRemoved().stream().mapToInt(GxProductBean::getOid).boxed().collect(Collectors.toSet());
-			for (Integer oid : oids) {
-				gxBilling.getGxProducts().removeIf(t -> {
-					return t.getOid().intValue() == oid;
-				});
-			}
-			for (GxProductBean added : bean.getGxProductBeanCollectionFault().getBeansAdded()) {
-				gxBilling.getGxProducts().add(makeGxProductEntity(added));
-			}
-			for (GxProductBean updated : bean.getGxProductBeanCollectionFault().getBeansUpdated()) {
-				makeGxProductEntity(updated);
+			gxBilling.getGxProducts().clear();
+			for (GxProductBean productBean : bean.getGxProductBeanCollectionFault().getBeans()) {
+				gxBilling.getGxProducts().add(makeGxProductEntity(productBean));
 			}
 		}
 

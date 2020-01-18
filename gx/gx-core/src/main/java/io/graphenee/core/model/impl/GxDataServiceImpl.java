@@ -49,9 +49,11 @@ import io.graphenee.core.exception.RegisterDeviceFailedException;
 import io.graphenee.core.exception.UnregisterDeviceFailedException;
 import io.graphenee.core.model.BeanCollectionFault;
 import io.graphenee.core.model.BeanFault;
+import io.graphenee.core.model.api.GxBeanFactory;
 import io.graphenee.core.model.api.GxDataService;
 import io.graphenee.core.model.bean.GxAccessKeyBean;
 import io.graphenee.core.model.bean.GxAuditLogBean;
+import io.graphenee.core.model.bean.GxBillingBean;
 import io.graphenee.core.model.bean.GxCityBean;
 import io.graphenee.core.model.bean.GxCountryBean;
 import io.graphenee.core.model.bean.GxCurrencyBean;
@@ -59,6 +61,7 @@ import io.graphenee.core.model.bean.GxEmailTemplateBean;
 import io.graphenee.core.model.bean.GxGenderBean;
 import io.graphenee.core.model.bean.GxNamespaceBean;
 import io.graphenee.core.model.bean.GxNamespacePropertyBean;
+import io.graphenee.core.model.bean.GxProductBean;
 import io.graphenee.core.model.bean.GxRegisteredDeviceBean;
 import io.graphenee.core.model.bean.GxResourceBean;
 import io.graphenee.core.model.bean.GxSavedQueryBean;
@@ -103,6 +106,7 @@ import io.graphenee.core.model.jpa.repository.GxGenderRepository;
 import io.graphenee.core.model.jpa.repository.GxNamespacePropertyRepository;
 import io.graphenee.core.model.jpa.repository.GxNamespaceRepository;
 import io.graphenee.core.model.jpa.repository.GxPasswordHistoryRepository;
+import io.graphenee.core.model.jpa.repository.GxProductRepository;
 import io.graphenee.core.model.jpa.repository.GxRegisteredDeviceRepository;
 import io.graphenee.core.model.jpa.repository.GxResourceRepository;
 import io.graphenee.core.model.jpa.repository.GxSavedQueryRepository;
@@ -190,6 +194,12 @@ public class GxDataServiceImpl implements GxDataService {
 
 	@Autowired
 	GxRegisteredDeviceRepository gxRegisteredDeviceRepository;
+
+	@Autowired
+	GxBeanFactory gxBeanFactory;
+
+	@Autowired
+	GxProductRepository gxProductRepository;
 
 	@PostConstruct
 	public void initialize() {
@@ -1668,26 +1678,32 @@ public class GxDataServiceImpl implements GxDataService {
 		return bean;
 	}
 
+	@Override
 	public GxAuditLogBean auditEvent(String auditEvent) {
 		return auditEntityEventByUser(null, null, auditEvent, null);
 	}
 
+	@Override
 	public GxAuditLogBean auditEventWithAdditionalData(String auditEvent, byte[] additionalData) {
 		return auditEntityEventByUserWithAdditionalData(null, null, auditEvent, null, additionalData);
 	}
 
+	@Override
 	public GxAuditLogBean auditEventByUser(String auditEvent, GxUserAccountBean userAccountBean) {
 		return auditEntityEventByUser(null, null, auditEvent, userAccountBean);
 	}
 
+	@Override
 	public GxAuditLogBean auditEventByUserWithAdditionalData(String auditEvent, GxUserAccountBean userAccountBean, byte[] additionalData) {
 		return auditEntityEventByUserWithAdditionalData(null, null, auditEvent, userAccountBean, additionalData);
 	}
 
+	@Override
 	public GxAuditLogBean auditEntityEventByUser(String auditEntity, Integer oidAuditEntity, String auditEvent, GxUserAccountBean userAccountBean) {
 		return auditEntityEventByUserWithAdditionalData(auditEntity, oidAuditEntity, auditEvent, userAccountBean, null);
 	}
 
+	@Override
 	public GxAuditLogBean auditEntityEventByUserWithAdditionalData(String auditEntity, Integer oidAuditEntity, String auditEvent, GxUserAccountBean userAccountBean,
 			byte[] additionalData) {
 		GxAuditLogBean bean = new GxAuditLogBean();
@@ -1703,16 +1719,19 @@ public class GxDataServiceImpl implements GxDataService {
 		return bean;
 	}
 
+	@Override
 	public List<GxAuditLogBean> findAuditLogByUser(GxUserAccountBean userAccountBean) {
 		List<GxAuditLog> entities = auditLogRepository.findAllByGxUserAccountOidOrderByAuditDateDesc(userAccountBean.getOid());
 		return makeAuditLogBean(entities);
 	}
 
+	@Override
 	public List<GxAuditLogBean> findAuditLogByAuditEntity(String auditEntity) {
 		List<GxAuditLog> entities = auditLogRepository.findAllByAuditEntityOrderByAuditDateDesc(auditEntity);
 		return makeAuditLogBean(entities);
 	}
 
+	@Override
 	public List<GxAuditLogBean> findAuditLogByAuditEntityAndOidAuditEntity(String auditEntity, Integer oidAuditEntity) {
 		List<GxAuditLog> entities = auditLogRepository.findAllByAuditEntityAndOidAuditEntityOrderByAuditDateDesc(auditEntity, oidAuditEntity);
 		return makeAuditLogBean(entities);

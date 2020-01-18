@@ -92,7 +92,35 @@ public class GxProductBean implements Serializable {
 	}
 
 	public String getProductType() {
-		return productTypeBeanFault.getBean().getTypeName();
+		if (productTypeBeanFault != null) {
+			return productTypeBeanFault.getBean().getTypeName();
+		} else
+			return null;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((oid == null) ? 0 : oid.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GxProductBean other = (GxProductBean) obj;
+		if (oid == null) {
+			if (other.oid != null)
+				return false;
+		} else if (!oid.equals(other.oid))
+			return false;
+		return true;
 	}
 
 }
