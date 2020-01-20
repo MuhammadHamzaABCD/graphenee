@@ -11,7 +11,7 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Grid.SelectionMode;
 
 import io.graphenee.core.model.bean.GxBillingBean;
-import io.graphenee.core.model.bean.GxProductBean;
+import io.graphenee.core.model.bean.GxBillingItemBean;
 import io.graphenee.pos.api.GxPosDataService;
 import io.graphenee.vaadin.AbstractEntityListPanel;
 import io.graphenee.vaadin.TRAbstractForm;
@@ -19,7 +19,7 @@ import io.graphenee.vaadin.TRAbstractForm;
 @SuppressWarnings("serial")
 @SpringComponent
 @Scope("prototype")
-public class GxBillingSummaryListPanel extends AbstractEntityListPanel<GxProductBean> {
+public class GxBillingSummaryListPanel extends AbstractEntityListPanel<GxBillingItemBean> {
 
 	@Autowired
 	GxBillingForm gxBillingForm;
@@ -30,16 +30,16 @@ public class GxBillingSummaryListPanel extends AbstractEntityListPanel<GxProduct
 	GxBillingBean gxBillingBean;
 
 	public GxBillingSummaryListPanel() {
-		super(GxProductBean.class);
+		super(GxBillingItemBean.class);
 	}
 
 	@Override
-	protected boolean onSaveEntity(GxProductBean entity) {
+	protected boolean onSaveEntity(GxBillingItemBean entity) {
 		return false;
 	}
 
 	@Override
-	protected boolean onDeleteEntity(GxProductBean entity) {
+	protected boolean onDeleteEntity(GxBillingItemBean entity) {
 		return false;
 	}
 
@@ -49,15 +49,15 @@ public class GxBillingSummaryListPanel extends AbstractEntityListPanel<GxProduct
 	}
 
 	@Override
-	protected List<GxProductBean> fetchEntities() {
+	protected List<GxBillingItemBean> fetchEntities() {
 		if (gxBillingBean != null)
-			return gxBillingBean.getGxProductBeanCollectionFault().getBeans().stream().collect(Collectors.toList());
+			return gxBillingBean.getGxProductBillingItemCollectionFault().getBeans().stream().collect(Collectors.toList());
 		return Collections.emptyList();
 	}
 
 	@Override
 	protected String[] visibleProperties() {
-		return new String[] { "productCode", "productName", "description", "price", "productType" };
+		return new String[] { "productName", "price", "quantity", "totalAmount" };
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class GxBillingSummaryListPanel extends AbstractEntityListPanel<GxProduct
 	}
 
 	@Override
-	protected TRAbstractForm<GxProductBean> editorForm() {
+	protected TRAbstractForm<GxBillingItemBean> editorForm() {
 		return null;
 	}
 

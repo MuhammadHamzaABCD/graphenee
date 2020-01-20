@@ -11,6 +11,7 @@ import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.TwinColSelect;
 import com.vaadin.ui.themes.ValoTheme;
 
@@ -112,6 +113,12 @@ public class GxBillingSummaryForm extends TRAbstractForm<GxBillingBean> {
 	@Override
 	protected void preBinding(GxBillingBean entity) {
 		super.preBinding(entity);
+
+	}
+
+	@Override
+	protected void addButtonsToFooter(HorizontalLayout footer) {
+		super.addButtonsToFooter(footer);
 
 	}
 

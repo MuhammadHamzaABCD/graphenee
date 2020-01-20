@@ -11,9 +11,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -44,12 +44,12 @@ public class GxProduct extends io.graphenee.core.model.GxMappedSuperclass implem
 	@Column(name = "bar_code")
 	private String barCode;
 
-	@ManyToMany(mappedBy = "gxProducts")
-	private List<GxBilling> gxBillings = new ArrayList<>();
-
 	@ManyToOne
 	@JoinColumn(name = "oid_product_type")
 	private GxProductType gxProductType;
+
+	@OneToMany(mappedBy = "gxProduct")
+	private List<GxBillingItem> gxBillingItems = new ArrayList<>();
 
 	public Integer getOid() {
 		return oid;
@@ -113,6 +113,14 @@ public class GxProduct extends io.graphenee.core.model.GxMappedSuperclass implem
 
 	public void setGxProductType(GxProductType gxProductType) {
 		this.gxProductType = gxProductType;
+	}
+
+	public List<GxBillingItem> getGxBillingItems() {
+		return gxBillingItems;
+	}
+
+	public void setGxBillingItems(List<GxBillingItem> gxBillingItems) {
+		this.gxBillingItems = gxBillingItems;
 	}
 
 }

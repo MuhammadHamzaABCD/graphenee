@@ -11,6 +11,7 @@
 		<class>io.graphenee.core.model.entity.GxAuditLog</class>
 		<class>io.graphenee.core.model.entity.GxBalanceSheet</class>
 		<class>io.graphenee.core.model.entity.GxBilling</class>
+		<class>io.graphenee.core.model.entity.GxBillingItem</class>
 		<class>io.graphenee.core.model.entity.GxCity</class>
 		<class>io.graphenee.core.model.entity.GxCountry</class>
 		<class>io.graphenee.core.model.entity.GxCurrency</class>

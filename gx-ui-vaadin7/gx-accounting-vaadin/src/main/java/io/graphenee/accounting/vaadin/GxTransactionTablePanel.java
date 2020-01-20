@@ -197,7 +197,6 @@ public class GxTransactionTablePanel extends AbstractEntityTablePanel<GxTransact
 
 	public static interface GxVoucherTableDelegate<GxVoucherBean> {
 		default void onUpdate(GxVoucherBean entity) {
-
 		}
 	}
 

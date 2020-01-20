@@ -83,6 +83,7 @@ public class GxProductForm extends TRAbstractForm<GxProductBean> {
 	@Override
 	protected void preBinding(GxProductBean entity) {
 		super.preBinding(entity);
+		productTypeBeanContainer.removeAllItems();
 		productTypeBeanContainer.addAll(gxPosDataService.findAllProductType());
 	}
 

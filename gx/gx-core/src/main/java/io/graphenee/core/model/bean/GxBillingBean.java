@@ -3,6 +3,8 @@ package io.graphenee.core.model.bean;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.graphenee.core.model.BeanCollectionFault;
 
@@ -15,10 +17,9 @@ public class GxBillingBean implements Serializable {
 	private double totalBill = 0;
 	private double tax = 0;
 	private double totalPayable = 0;
-
 	private double totalPaid = 0;
 
-	private BeanCollectionFault<GxProductBean> gxProductBeanCollectionFault = BeanCollectionFault.emptyCollectionFault();
+	private BeanCollectionFault<GxBillingItemBean> gxProductBillingItemCollectionFault = BeanCollectionFault.emptyCollectionFault();
 
 	public Integer getOid() {
 		return oid;
@@ -84,15 +85,16 @@ public class GxBillingBean implements Serializable {
 		this.totalPaid = totalPaid;
 	}
 
-	public BeanCollectionFault<GxProductBean> getGxProductBeanCollectionFault() {
-		return gxProductBeanCollectionFault;
-	}
-
-	public void setGxProductBeanCollectionFault(BeanCollectionFault<GxProductBean> gxProductBeanCollectionFault) {
-		this.gxProductBeanCollectionFault = gxProductBeanCollectionFault;
-	}
-
 	public double calculatePayableAmout() {
+
+		List<GxBillingItemBean> billingItems = new ArrayList<>(getGxProductBillingItemCollectionFault().getBeans());
+		totalBill = 0;
+		for (GxBillingItemBean gxBillingItemBean : billingItems) {
+			if (gxBillingItemBean.getProductFault() != null) {
+				totalBill += gxBillingItemBean.getProductFault().getBean().getPrice() * gxBillingItemBean.getQuantity();
+			}
+		}
+
 		totalPayable = getTotalBill();
 		double discountApplied = getDiscount() <= 1.0 ? totalPayable * getDiscount() : getDiscount();
 		if (discountApplied < 0) {
@@ -109,4 +111,13 @@ public class GxBillingBean implements Serializable {
 		totalPayable = totalPayable + taxApplied;
 		return totalPayable;
 	}
+
+	public BeanCollectionFault<GxBillingItemBean> getGxProductBillingItemCollectionFault() {
+		return gxProductBillingItemCollectionFault;
+	}
+
+	public void setGxProductBillingItemCollectionFault(BeanCollectionFault<GxBillingItemBean> gxProductBillingItemCollectionFault) {
+		this.gxProductBillingItemCollectionFault = gxProductBillingItemCollectionFault;
+	}
+
 }

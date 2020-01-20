@@ -96,7 +96,8 @@ public class GxPosDataServiceImpl implements GxPosDataService {
 
 	@Override
 	public List<GxProductBean> findAllProductByBillingOid(GxBillingBean gxBillingBean) {
-		return gxBeanFactory.makeGxProductBean(gxProductRepository.findAllByGxBillingsOid(gxBillingBean.getOid()));
+		//		return gxBeanFactory.makeGxProductBean(gxProductRepository.findAllByGxBillingItemsOid(gxBillingBean.getOid()));
+		return null;
 
 	}
 

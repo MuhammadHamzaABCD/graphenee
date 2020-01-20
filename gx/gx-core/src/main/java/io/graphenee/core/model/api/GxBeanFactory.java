@@ -14,6 +14,7 @@ import io.graphenee.core.model.bean.GxAccountConfigurationBean;
 import io.graphenee.core.model.bean.GxAccountTypeBean;
 import io.graphenee.core.model.bean.GxBalanceSheetBean;
 import io.graphenee.core.model.bean.GxBillingBean;
+import io.graphenee.core.model.bean.GxBillingItemBean;
 import io.graphenee.core.model.bean.GxGeneralLedgerBean;
 import io.graphenee.core.model.bean.GxIncomeStatementBean;
 import io.graphenee.core.model.bean.GxNamespaceBean;
@@ -27,6 +28,7 @@ import io.graphenee.core.model.entity.GxAccount;
 import io.graphenee.core.model.entity.GxAccountConfiguration;
 import io.graphenee.core.model.entity.GxAccountType;
 import io.graphenee.core.model.entity.GxBilling;
+import io.graphenee.core.model.entity.GxBillingItem;
 import io.graphenee.core.model.entity.GxGeneralLedger;
 import io.graphenee.core.model.entity.GxNamespace;
 import io.graphenee.core.model.entity.GxNamespaceProperty;
@@ -37,6 +39,7 @@ import io.graphenee.core.model.entity.GxVoucher;
 import io.graphenee.core.model.jpa.repository.GxAccountConfigurationRepository;
 import io.graphenee.core.model.jpa.repository.GxAccountRepository;
 import io.graphenee.core.model.jpa.repository.GxAccountTypeRepository;
+import io.graphenee.core.model.jpa.repository.GxBillingItemRepository;
 import io.graphenee.core.model.jpa.repository.GxBillingRepository;
 import io.graphenee.core.model.jpa.repository.GxJournalVoucherRepository;
 import io.graphenee.core.model.jpa.repository.GxNamespacePropertyRepository;
@@ -77,6 +80,9 @@ public class GxBeanFactory {
 
 	@Autowired
 	GxBillingRepository gxBillingRepository;
+
+	@Autowired
+	GxBillingItemRepository gxBillingItemRepository;
 
 	public GxAccountTypeBean makeGxAccountTypeBean(GxAccountType entity) {
 		GxAccountTypeBean bean = new GxAccountTypeBean();
@@ -284,9 +290,11 @@ public class GxBeanFactory {
 		gxProductBean.setProductCode(gxProduct.getProductCode());
 		gxProductBean.setRetailPrice(gxProduct.getRetailPrice());
 		gxProductBean.setProductName(gxProduct.getProductName());
-		gxProductBean.setProductTypeBeanFault(new BeanFault<>(gxProduct.getGxProductType().getOid(), (oid) -> {
-			return makeGxProductTypeBean(gxProductTypeRepository.findOne(oid));
-		}));
+		if (gxProduct.getGxProductType() != null) {
+			gxProductBean.setProductTypeBeanFault(new BeanFault<>(gxProduct.getGxProductType().getOid(), (oid) -> {
+				return makeGxProductTypeBean(gxProductTypeRepository.findOne(oid));
+			}));
+		}
 		return gxProductBean;
 
 	}
@@ -327,10 +335,10 @@ public class GxBeanFactory {
 		bean.setTotalBill(entity.getTotalBill());
 		bean.setTotalPaid(entity.getTotalPaid());
 		bean.setTotalPayable(entity.getTotalPayable());
-		bean.setGxProductBeanCollectionFault(BeanCollectionFault.collectionFault(() -> {
-			return gxProductRepository.findAllByGxBillingsOid(bean.getOid()).stream().map(this::makeGxProductBean).collect(Collectors.toList());
+		bean.setGxProductBillingItemCollectionFault(BeanCollectionFault.collectionFault(() -> {
+			List<GxBillingItem> gxBillingItem = gxBillingItemRepository.findAllByGxBillingOid(entity.getOid());
+			return makeGxBillingItemBean(gxBillingItem);
 		}));
-
 		return bean;
 	}
 
@@ -338,6 +346,26 @@ public class GxBeanFactory {
 		List<GxBillingBean> GxBillingBeanlist = new ArrayList<>();
 		for (GxBilling gxBilling : listGxBilling) {
 			GxBillingBeanlist.add(makeGxBillingBean(gxBilling));
+		}
+		return GxBillingBeanlist;
+
+	}
+
+	public GxBillingItemBean makeGxBillingItemBean(GxBillingItem entity) {
+		GxBillingItemBean bean = new GxBillingItemBean();
+		bean.setOid(entity.getOid());
+		bean.setDiscount(entity.getDiscount());
+		bean.setQuantity(entity.getQuantity());
+		bean.setProductFault(BeanFault.beanFault(entity.getGxProduct().getOid(), oid -> {
+			return makeGxProductBean(gxProductRepository.findOne(oid));
+		}));
+		return bean;
+	}
+
+	public List<GxBillingItemBean> makeGxBillingItemBean(List<GxBillingItem> listGxBilling) {
+		List<GxBillingItemBean> GxBillingBeanlist = new ArrayList<>();
+		for (GxBillingItem gxBillingItem : listGxBilling) {
+			GxBillingBeanlist.add(makeGxBillingItemBean(gxBillingItem));
 		}
 		return GxBillingBeanlist;
 

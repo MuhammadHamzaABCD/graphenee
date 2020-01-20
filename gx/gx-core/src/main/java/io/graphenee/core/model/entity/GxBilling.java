@@ -6,15 +6,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -45,9 +44,11 @@ public class GxBilling extends io.graphenee.core.model.GxMappedSuperclass implem
 	@Column(name = "total_payable")
 	private double totalPayable;
 
-	@ManyToMany
-	@JoinTable(name = "gx_billing_product_join", joinColumns = { @JoinColumn(name = "oid_billing") }, inverseJoinColumns = { @JoinColumn(name = "oid_product") })
-	private List<GxProduct> gxProducts = new ArrayList<>();
+	@Column(name = "total_paid")
+	private double totalPaid;
+
+	@OneToMany(mappedBy = "gxBilling", cascade = CascadeType.ALL)
+	private List<GxBillingItem> gxBillingItems = new ArrayList<>();
 
 	public Integer getOid() {
 		return oid;
@@ -113,15 +114,25 @@ public class GxBilling extends io.graphenee.core.model.GxMappedSuperclass implem
 		this.totalPaid = totalPaid;
 	}
 
-	public List<GxProduct> getGxProducts() {
-		return gxProducts;
+	public List<GxBillingItem> getGxBillingItems() {
+		return gxBillingItems;
 	}
 
-	public void setGxProducts(List<GxProduct> gxProducts) {
-		this.gxProducts = gxProducts;
+	public void setGxBillingItems(List<GxBillingItem> gxBillingItems) {
+		this.gxBillingItems = gxBillingItems;
 	}
 
-	@Column(name = "total_paid")
-	private double totalPaid;
+	public GxBillingItem addBillingItem(GxBillingItem gxBillingItem) {
+		getGxBillingItems().add(gxBillingItem);
+		gxBillingItem.setGxBilling(this);
+		return gxBillingItem;
+	}
+
+	public GxBillingItem removeBillingItem(GxBillingItem gxBillingItem) {
+		getGxBillingItems().remove(gxBillingItem);
+		gxBillingItem.setGxBilling(null);
+		return gxBillingItem;
+
+	}
 
 }

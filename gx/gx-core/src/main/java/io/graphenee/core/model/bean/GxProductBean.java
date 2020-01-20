@@ -6,6 +6,7 @@ import java.io.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.graphenee.core.model.BeanCollectionFault;
 import io.graphenee.core.model.BeanFault;
 
 public class GxProductBean implements Serializable {
@@ -26,6 +27,8 @@ public class GxProductBean implements Serializable {
 	private String barCode;
 
 	private BeanFault<Integer, GxProductTypeBean> productTypeBeanFault;
+
+	private BeanCollectionFault<GxBillingItemBean> gxProductBillingItemCollectionFault = BeanCollectionFault.emptyCollectionFault();
 
 	public Integer getOid() {
 		return oid;
@@ -121,6 +124,14 @@ public class GxProductBean implements Serializable {
 		} else if (!oid.equals(other.oid))
 			return false;
 		return true;
+	}
+
+	public BeanCollectionFault<GxBillingItemBean> getGxProductBillingItemCollectionFault() {
+		return gxProductBillingItemCollectionFault;
+	}
+
+	public void setGxProductBillingItemCollectionFault(BeanCollectionFault<GxBillingItemBean> gxProductBillingItemCollectionFault) {
+		this.gxProductBillingItemCollectionFault = gxProductBillingItemCollectionFault;
 	}
 
 }

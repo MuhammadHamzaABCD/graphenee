@@ -17,13 +17,11 @@ package io.graphenee.core.model.jpa.repository;
 
 import java.util.List;
 
-import io.graphenee.core.model.entity.GxProduct;
+import io.graphenee.core.model.entity.GxBillingItem;
 import io.graphenee.core.model.jpa.GxJpaRepository;
 
-public interface GxProductRepository extends GxJpaRepository<GxProduct, Integer> {
+public interface GxBillingItemRepository extends GxJpaRepository<GxBillingItem, Integer> {
 
-	List<GxProduct> findAllByGxBillingItemsOid(Integer oid);
-
-	List<GxProduct> findAllByProductNameIgnoreCaseContainingOrProductCodeIgnoreCaseContaining(String productName, String productCode);
+	List<GxBillingItem> findAllByGxBillingOid(Integer billingOid);
 
 }
