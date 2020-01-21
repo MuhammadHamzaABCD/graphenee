@@ -14,8 +14,6 @@ public class GxBillingItemBean implements Serializable {
 	private double discount = 0;
 	private Integer quantity = 1;
 	private GxBilling gxBilling;
-	private double totalAmount = 0;
-
 	private BeanFault<Integer, GxProductBean> productFault;
 
 	public Integer getOid() {
@@ -62,14 +60,14 @@ public class GxBillingItemBean implements Serializable {
 		if (productFault != null) {
 			return productFault.getBean().getProductName();
 		}
-		return null;
+		return "";
 	}
 
 	public String getProductCode() {
 		if (productFault != null) {
 			return productFault.getBean().getProductCode();
 		}
-		return null;
+		return "";
 	}
 
 	@Override
@@ -103,18 +101,18 @@ public class GxBillingItemBean implements Serializable {
 		return true;
 	}
 
-	public double getTotalAmount() {
+	public Double getTotalAmount() {
 		if (getProductFault() != null) {
-			return totalAmount = getQuantity() * getProductFault().getBean().getPrice();
+			return getQuantity() * getProductFault().getBean().getPrice();
 		}
-		return 0;
+		return new Double(0);
 	}
 
-	public double getPrice() {
+	public Double getPrice() {
 		if (getProductFault() != null) {
 			return getProductFault().getBean().getPrice();
 		}
-		return 0;
+		return new Double(0);
 	}
 
 }

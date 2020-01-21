@@ -34,6 +34,9 @@ create table gx_billing (
     tax double precision not null default 0,
     total_payable double precision not null default 0,
     total_paid double precision not null default 0,
+    is_paid boolean not null default false;
+    is_draft boolean not null default false;
+    is_void boolean not null  default false;
 	primary key (oid)
 );
 

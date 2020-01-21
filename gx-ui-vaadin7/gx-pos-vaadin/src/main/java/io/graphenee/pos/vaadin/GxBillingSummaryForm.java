@@ -40,6 +40,7 @@ public class GxBillingSummaryForm extends TRAbstractForm<GxBillingBean> {
 	MTextField totalPayable;
 	TwinColSelect gxProductBeanCollectionFault;
 	MTextField searchBar;
+	MTextField totalPaid;
 
 	@Override
 	protected Component getFormComponent() {
@@ -63,10 +64,12 @@ public class GxBillingSummaryForm extends TRAbstractForm<GxBillingBean> {
 		billDate.setDateFormat(TRCalendarUtil.dateFormatter.toPattern());
 		discount = new MTextField("discount").withRequired(true);
 		discount.setConverter(StringToDoubleConverter.class);
+		totalPaid = new MTextField("Total Paid").withRequired(true);
+		totalPaid.setConverter(StringToDoubleConverter.class);
 		tax = new MTextField("tax").withRequired(true);
 		tax.setConverter(StringToDoubleConverter.class);
 		formLayoutLeft.addComponents(billNumber, billDate, totalBill);
-		formLayoutMiddle.addComponents(discount, tax, totalPayable);
+		formLayoutMiddle.addComponents(discount, tax, totalPayable, totalPaid);
 
 		MHorizontalLayout billingSummaryLayout = new MHorizontalLayout().withWidth("100%");
 		MVerticalLayout productLayout = new MVerticalLayout().withHeight("100%");

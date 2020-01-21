@@ -256,6 +256,9 @@ public class GxEntityFactory {
 		gxBilling.setTotalBill(bean.getTotalBill());
 		gxBilling.setTotalPaid(bean.getTotalPaid());
 		gxBilling.setTotalPayable(bean.getTotalPayable());
+		gxBilling.setDraft(bean.isDraft());
+		gxBilling.setVoid(bean.isVoid());
+		gxBilling.setPaid(bean.isPaid());
 		if (bean.getGxProductBillingItemCollectionFault().isModified()) {
 			gxBilling.getGxBillingItems().clear();
 			for (GxBillingItemBean added : bean.getGxProductBillingItemCollectionFault().getBeans()) {

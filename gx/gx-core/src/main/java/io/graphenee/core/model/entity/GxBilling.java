@@ -47,6 +47,39 @@ public class GxBilling extends io.graphenee.core.model.GxMappedSuperclass implem
 	@Column(name = "total_paid")
 	private double totalPaid;
 
+	@Column(name = "is_draft")
+	private boolean isDraft;
+
+	@Column(name = "is_void")
+	private boolean isVoid;
+
+	@Column(name = "is_paid")
+	private boolean isPaid;
+
+	public boolean isDraft() {
+		return isDraft;
+	}
+
+	public void setDraft(boolean isDraft) {
+		this.isDraft = isDraft;
+	}
+
+	public boolean isVoid() {
+		return isVoid;
+	}
+
+	public void setVoid(boolean isVoid) {
+		this.isVoid = isVoid;
+	}
+
+	public boolean isPaid() {
+		return isPaid;
+	}
+
+	public void setPaid(boolean isPaid) {
+		this.isPaid = isPaid;
+	}
+
 	@OneToMany(mappedBy = "gxBilling", cascade = CascadeType.ALL)
 	private List<GxBillingItem> gxBillingItems = new ArrayList<>();
 

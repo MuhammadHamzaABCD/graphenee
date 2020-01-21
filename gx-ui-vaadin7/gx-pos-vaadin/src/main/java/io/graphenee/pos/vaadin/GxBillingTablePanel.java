@@ -7,14 +7,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.vaadin.viritin.button.MButton;
 import org.vaadin.viritin.fields.MTextField;
+import org.vaadin.viritin.label.MLabel;
 
+import com.vaadin.data.Property.ValueChangeNotifier;
+import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.converter.StringToDoubleConverter;
 import com.vaadin.data.util.converter.StringToIntegerConverter;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.ui.AbstractOrderedLayout;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Table;
+import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.themes.ValoTheme;
 
 import io.graphenee.core.model.ModificationListener;
@@ -40,8 +46,6 @@ public class GxBillingTablePanel extends AbstractEntityTablePanel<GxBillingItemB
 	private BeanItemContainer<GxProductBean> gxProductContainer = new BeanItemContainer<GxProductBean>(GxProductBean.class);
 
 	private GxBillingTableDelegate<GxBillingBean> delegate = null;
-
-	String totalAmount = "";
 
 	public GxBillingTablePanel() {
 		super(GxBillingItemBean.class);
@@ -120,6 +124,54 @@ public class GxBillingTablePanel extends AbstractEntityTablePanel<GxBillingItemB
 		setAddButtonVisibility(false);
 		setEditButtonVisibility(false);
 		setDeleteButtonVisibility(false);
+		//		entityTable().addGeneratedColumn("Price", priceGeneratedCell());
+		//		entityTable().addGeneratedColumn("Total Amount", totalAmountGeneratedCell());
+
+	}
+
+	private ColumnGenerator priceGeneratedCell() {
+		return new Table.ColumnGenerator() {
+
+			@Override
+			public Object generateCell(Table source, Object itemId, Object columnId) {
+				BeanItem<GxBillingItemBean> beanItem = (BeanItem<GxBillingItemBean>) source.getItem(itemId);
+				GxBillingItemBean bean = beanItem.getBean();
+				MLabel price = new MLabel(formattedPrice(bean));
+				((ValueChangeNotifier) beanItem.getItemProperty("productFault")).addValueChangeListener(event -> {
+					price.setValue(formattedPrice(bean));
+				});
+				return price;
+			}
+		};
+
+	}
+
+	private ColumnGenerator totalAmountGeneratedCell() {
+		return new Table.ColumnGenerator() {
+
+			@Override
+			public Object generateCell(Table source, Object itemId, Object columnId) {
+				BeanItem<GxBillingItemBean> beanItem = (BeanItem<GxBillingItemBean>) source.getItem(itemId);
+				GxBillingItemBean bean = beanItem.getBean();
+				MLabel tottalAmount = new MLabel(formattedPrice(bean));
+				((ValueChangeNotifier) beanItem.getItemProperty("productFault")).addValueChangeListener(event -> {
+					tottalAmount.setValue(formattedTotalAmount(bean));
+				});
+				((ValueChangeNotifier) beanItem.getItemProperty("quantity")).addValueChangeListener(event -> {
+					tottalAmount.setValue(formattedTotalAmount(bean));
+				});
+				return tottalAmount;
+			}
+		};
+
+	}
+
+	private String formattedTotalAmount(GxBillingItemBean bean) {
+		return String.format("%1.2f", bean.getTotalAmount());
+	}
+
+	private String formattedPrice(GxBillingItemBean bean) {
+		return String.format("%1.2f", bean.getPrice());
 	}
 
 	@Override
@@ -127,7 +179,7 @@ public class GxBillingTablePanel extends AbstractEntityTablePanel<GxBillingItemB
 		MButton addBillItem = new MButton("Add Entry");
 		addBillItem.addClickListener(clicked -> {
 			GxBillingItemBean gxBillingItemBean = new GxBillingItemBean();
-			billingBean.getGxProductBillingItemCollectionFault().update(gxBillingItemBean);
+			billingBean.getGxProductBillingItemCollectionFault().add(gxBillingItemBean);
 			refresh();
 		});
 
@@ -150,12 +202,15 @@ public class GxBillingTablePanel extends AbstractEntityTablePanel<GxBillingItemB
 			cbx.setStyleName(ValoTheme.COMBOBOX_BORDERLESS);
 			cbx.setItemCaptionMode(ItemCaptionMode.PROPERTY);
 			cbx.setItemCaptionPropertyId("productName");
+			cbx.setInputPrompt("Select product");
+			cbx.setSizeFull();
 			cbx.setContainerDataSource(gxProductContainer);
 
 			cbx.addValueChangeListener(listener -> {
+				System.err.println(itemId.getTotalAmount());
 				billingBean.getGxProductBillingItemCollectionFault().update(itemId);
-				buildFooter();
-				refresh();
+				entityTable().refreshRowCache();
+				refreshFooter();
 			});
 
 			return cbx;
@@ -164,14 +219,31 @@ public class GxBillingTablePanel extends AbstractEntityTablePanel<GxBillingItemB
 			MTextField textField = new MTextField();
 			textField.setConverter(new StringToIntegerConverter());
 			textField.setStyleName(GrapheneeTheme.STYLE_V_ALIGN_RIGHT);
-			textField.addValueChangeListener(listener -> {
+			textField.setSizeFull();
+			textField.addBlurListener(listener -> {
 				billingBean.getGxProductBillingItemCollectionFault().update(itemId);
-				buildFooter();
+				refreshFooter();
+
 			});
 			return textField;
 		}
 
-		return super.propertyField(itemId, propertyId);
+		if (propertyId.matches("(price|totalAmount)")) {
+			MTextField textField = new MTextField();
+			textField.setConverter(new StringToDoubleConverter());
+			textField.setStyleName(GrapheneeTheme.STYLE_V_ALIGN_RIGHT);
+			textField.setSizeFull();
+			textField.setEnabled(false);
+			textField.addBlurListener(listener -> {
+				billingBean.getGxProductBillingItemCollectionFault().update(itemId);
+				refreshFooter();
+
+			});
+			return textField;
+		}
+
+		Field<?> field = super.propertyField(itemId, propertyId);
+		return field;
 	}
 
 	public static interface GxBillingTableDelegate<GxBillingBean> {
@@ -182,12 +254,24 @@ public class GxBillingTablePanel extends AbstractEntityTablePanel<GxBillingItemB
 
 	private void buildFooter() {
 		entityTable().setFooterVisible(true);
-		entityTable().setColumnFooter("price", "Total Amount");
-		entityTable().setColumnFooter("totalAmount", getTotalAmount());
+		entityTable().setColumnFooter("Price", "Total Amount");
+		entityTable().setColumnFooter("Total Amount", getTotalAmount());
+	}
+
+	public void refreshFooter() {
+		entityTable().setColumnFooter("Total Amount", getTotalAmount());
 	}
 
 	public void setDelegate(GxBillingTableDelegate<GxBillingBean> delegate) {
 		this.delegate = delegate;
 	}
+
+	//	@Override
+	//	protected void onCellValueChange(Object value, GxBillingItemBean entity, String propertyId) {
+	//		if (entity.getQuantity() == 0 || entity.getQuantity() == null) {
+	//			billingBean.getGxProductBillingItemCollectionFault().remove(entity);
+	//		}
+	//
+	//	}
 
 }

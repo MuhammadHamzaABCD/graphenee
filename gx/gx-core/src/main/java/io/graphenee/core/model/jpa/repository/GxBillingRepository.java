@@ -24,4 +24,11 @@ public interface GxBillingRepository extends GxJpaRepository<GxBilling, Integer>
 
 	List<GxBilling> findAllByGxBillingItemsOid(Integer oid);
 
+	GxBilling findFirstByIsDraftOrderByBillDateDesc(boolean isDraft);
+
+	GxBilling findFirstByIsPaidOrderByBillDateDesc(boolean isPaid);
+
+	GxBilling findFirstByOrderByBillDateDesc();
+
+	List<GxBilling> findAllByIsPaid(boolean isPaid);
 }

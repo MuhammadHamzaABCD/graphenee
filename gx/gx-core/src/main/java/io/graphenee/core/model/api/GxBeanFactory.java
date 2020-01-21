@@ -335,6 +335,9 @@ public class GxBeanFactory {
 		bean.setTotalBill(entity.getTotalBill());
 		bean.setTotalPaid(entity.getTotalPaid());
 		bean.setTotalPayable(entity.getTotalPayable());
+		bean.setDraft(entity.isDraft());
+		bean.setPaid(entity.isPaid());
+		bean.setVoid(entity.isVoid());
 		bean.setGxProductBillingItemCollectionFault(BeanCollectionFault.collectionFault(() -> {
 			List<GxBillingItem> gxBillingItem = gxBillingItemRepository.findAllByGxBillingOid(entity.getOid());
 			return makeGxBillingItemBean(gxBillingItem);

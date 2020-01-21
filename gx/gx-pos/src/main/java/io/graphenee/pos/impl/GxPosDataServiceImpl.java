@@ -90,6 +90,24 @@ public class GxPosDataServiceImpl implements GxPosDataService {
 	}
 
 	@Override
+	public GxBillingBean issueBill(GxBillingBean bean) {
+		GxBilling entity = entityFactory.makeGxBillingEntity(bean);
+		gxBillingRepository.save(entity);
+		bean.setOid(entity.getOid());
+		return bean;
+	}
+
+	@Override
+	public GxBillingBean collectBill(GxBillingBean bean) {
+		bean.setBillNumber(generateBillNumber().toString());
+		bean.setPaid(true);
+		GxBilling entity = entityFactory.makeGxBillingEntity(bean);
+		gxBillingRepository.save(entity);
+		bean.setOid(entity.getOid());
+		return bean;
+	}
+
+	@Override
 	public void delete(GxBillingBean bean) {
 		gxBillingRepository.deleteById(bean.getOid());
 	}
@@ -104,6 +122,24 @@ public class GxPosDataServiceImpl implements GxPosDataService {
 	@Override
 	public List<GxProductBean> findAllProductByNameOrCode(String productName, String productCode) {
 		return gxBeanFactory.makeGxProductBean(gxProductRepository.findAllByProductNameIgnoreCaseContainingOrProductCodeIgnoreCaseContaining(productName, productCode));
+	}
+
+	public Integer generateBillNumber() {
+		GxBilling gxBilling = gxBillingRepository.findFirstByIsPaidOrderByBillDateDesc(true);
+		if (gxBilling != null) {
+			return Integer.parseInt(gxBilling.getBillNumber()) + 1;
+		} else {
+			gxBilling = gxBillingRepository.findFirstByOrderByBillDateDesc();
+			if (gxBilling != null) {
+				return gxBilling.getOid();
+			} else
+				return 0;
+		}
+	}
+
+	@Override
+	public List<GxBillingBean> findAllByIsPaid(boolean isPaid) {
+		return gxBeanFactory.makeGxBillingBean(gxBillingRepository.findAllByIsPaid(isPaid));
 
 	}
 

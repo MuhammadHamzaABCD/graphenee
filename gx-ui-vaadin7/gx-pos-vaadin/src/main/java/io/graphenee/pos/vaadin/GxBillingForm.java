@@ -2,7 +2,6 @@ package io.graphenee.pos.vaadin;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -40,6 +39,7 @@ public class GxBillingForm extends TRAbstractForm<GxBillingBean> {
 	MTextField totalBill;
 	MTextField tax;
 	MTextField totalPayable;
+	MTextField totalPaid;
 
 	Collection<GxProductBean> selectedBeans = Collections.EMPTY_LIST;
 
@@ -70,14 +70,18 @@ public class GxBillingForm extends TRAbstractForm<GxBillingBean> {
 		billDate.setDateFormat(TRCalendarUtil.dateFormatter.toPattern());
 		discount = new MTextField("discount").withRequired(true);
 		discount.setConverter(StringToDoubleConverter.class);
+		totalPaid = new MTextField("Total Paid").withRequired(true);
+		totalPaid.setConverter(StringToDoubleConverter.class);
 		tax = new MTextField("tax").withRequired(true);
 		tax.setConverter(StringToDoubleConverter.class);
 		formLayoutLeft.addComponents(billNumber, billDate, totalBill);
-		formLayoutMiddle.addComponents(discount, tax, totalPayable);
+		formLayoutMiddle.addComponents(discount, tax, totalPayable, totalPaid);
 		MHorizontalLayout billingSummaryLayout = new MHorizontalLayout().withWidth("100%");
 		MVerticalLayout productLayout = new MVerticalLayout().withHeight("100%");
 		productLayout.setSizeFull();
 		billingSummaryLayout.addComponents(formLayoutLeft, formLayoutMiddle);
+		getEntity().getGxProductBillingItemCollectionFault().addModificationListener(() -> {
+		});
 		gxBillingTablePanel.setDelegate(new GxBillingTableDelegate<GxBillingBean>() {
 			@Override
 			public void onUpdate() {
@@ -133,7 +137,7 @@ public class GxBillingForm extends TRAbstractForm<GxBillingBean> {
 		super.postBinding(entity);
 		gxBillingTablePanel.initializeWithEntity(entity);
 		gxBillingTablePanel.refresh();
-		billNumber.setValue(UUID.randomUUID().toString());
+		billNumber.setValue("--Draft--");
 		billNumber.setEnabled(false);
 		billDate.setValue(TRCalendarUtil.getCurrentTimeStamp());
 		billDate.setEnabled(false);

@@ -18,6 +18,33 @@ public class GxBillingBean implements Serializable {
 	private double tax = 0;
 	private double totalPayable = 0;
 	private double totalPaid = 0;
+	private boolean isDraft;
+	private boolean isVoid;
+	private boolean isPaid;
+
+	public boolean isDraft() {
+		return isDraft;
+	}
+
+	public void setDraft(boolean isDraft) {
+		this.isDraft = isDraft;
+	}
+
+	public boolean isVoid() {
+		return isVoid;
+	}
+
+	public void setVoid(boolean isVoid) {
+		this.isVoid = isVoid;
+	}
+
+	public boolean isPaid() {
+		return isPaid;
+	}
+
+	public void setPaid(boolean isPaid) {
+		this.isPaid = isPaid;
+	}
 
 	private BeanCollectionFault<GxBillingItemBean> gxProductBillingItemCollectionFault = BeanCollectionFault.emptyCollectionFault();
 
@@ -38,6 +65,10 @@ public class GxBillingBean implements Serializable {
 	}
 
 	public Timestamp getBillDate() {
+		return billDate;
+	}
+
+	public Timestamp getBillDateAndTime() {
 		return billDate;
 	}
 

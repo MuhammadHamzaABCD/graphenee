@@ -30,4 +30,9 @@ public interface GxPosDataService {
 
 	List<GxProductBean> findAllProductByNameOrCode(String productName, String productCode);
 
+	GxBillingBean issueBill(GxBillingBean bean);
+
+	GxBillingBean collectBill(GxBillingBean bean);
+
+	List<GxBillingBean> findAllByIsPaid(boolean isPaid);
 }
